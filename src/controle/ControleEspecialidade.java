@@ -4,66 +4,80 @@ import java.io.*;
 import java.util.ArrayList;
 
 import entidade.Especialidade;
+import factory.MySqlFactory;
+import java.sql.*;
 import telas.TelaEspecialidade;
 
 public class ControleEspecialidade {
 
-    private Especialidade especialidade;
-    private File f;
-    private FileWriter fw;
-    private BufferedWriter bw;
-    private FileReader fr;
-    private BufferedReader br;
-    private String path;
+    private MySqlFactory conn;
+    private Connection conEspecialidade;
 
-    public ControleEspecialidade(String path) {
-        this.path = path;
-    }
-
-    private void abrirArquivo(String nome) throws IOException {
-
-        String pathCompleto = path + nome;
-        f = new File(pathCompleto);
-        if (!f.exists()) {
-            f.createNewFile();
+    public ControleEspecialidade() {
+        try {
+            this.conEspecialidade = DriverManager.getConnection("jdbc:mysql://localhost:3306/aula_poo", "root", "root");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void gravarArquivo(TelaEspecialidade dadoEsp) throws FileNotFoundException, IOException {
-
-        abrirArquivo("especialidade.txt");
-        fw = new FileWriter(f, true);
-        bw = new BufferedWriter(fw);
-        especialidade = new Especialidade(dadoEsp.getIdEspecialidade(), dadoEsp.getNome());
-        String esp = especialidade.getIdEspecialidade() + ", " + especialidade.getNome();
-        bw.write(esp);
-        bw.newLine();
-        bw.close();
-        fecharArquivo();
-
+    public void inserir(TelaEspecialidade especialidades) throws SQLException {
+        String sql = "INSERT INTO especialidade"
+                + " (idespecialidade, nome)"
+                + "VALUES (?, ?)";
+        try {
+            PreparedStatement stmt = this.conEspecialidade.prepareStatement(sql);
+            stmt.setInt(1, especialidades.getIdEspecialidade());
+            stmt.setString(2, especialidades.getNome());
+            //executando
+            stmt.execute();
+            stmt.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public ArrayList lerArquivo(String nomeArq) throws IOException {
-        String linha = "";
-        abrirArquivo(nomeArq);
-        fr = new FileReader(f);
-        br = new BufferedReader(fr);
-        ArrayList<Especialidade> esps = new ArrayList<>();
-        while ((linha = br.readLine()) != null) {
-            String[] dados = linha.split(",");
-            especialidade = new Especialidade(Integer.parseInt(dados[0]), dados[1]);
-            esps.add(especialidade);
-        }
+    public ArrayList listar() {
+        String sql = "SELECT * FROM especialidade";
 
-        br.close();
-        fr.close();
-        return esps;
+        ArrayList<Especialidade> especialidades = new ArrayList<>();
+        Especialidade especialidade;
+        try {
+            Statement stmt = this.conEspecialidade.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                int id = rs.getInt("idespecialidade");
+                String nome = rs.getString("nome");
+                especialidade = new Especialidade(id, nome);
+                especialidades.add(especialidade);
+            }
+            stmt.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return especialidades;
     }
 
-    public void fecharArquivo() throws IOException {
-        if (f.exists()) {
-            bw.close();
-            fw.close();
+    public void atualizar(Especialidade especialidade) {
+        String sql = "UPDATE especialidade\n"
+                + "SET nome = ?\n"
+                + "WHERE idespecialidade = ?;";
+        System.out.println(especialidade.getNome()+ especialidade.getIdEspecialidade());
+        
+        try {
+            PreparedStatement stmt = this.conEspecialidade.prepareStatement(sql);
+            stmt.setString(1, especialidade.getNome());
+            stmt.setInt(2, especialidade.getIdEspecialidade());
+            //executando
+            stmt.execute();
+            stmt.close();
+        }catch(SQLException e){
+            throw new RuntimeException(e);
         }
+    }
+
+    public void excluir() {
+
     }
 }

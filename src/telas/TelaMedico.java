@@ -15,7 +15,7 @@ public class TelaMedico {
     private String endereco;
     private int idEspecialidade;
     
-    public TelaMedico(ArrayList<Especialidade> especialidades) throws IOException {
+    public TelaMedico(ArrayList<Especialidade> especialidades) {
         Scanner sc = new Scanner(System.in);
         System.out.println("Digite o id do medico:");
         this.setIdMedico(Integer.parseInt(sc.nextLine()));
