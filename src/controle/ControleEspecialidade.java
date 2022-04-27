@@ -10,22 +10,19 @@ import java.sql.*;
 public class ControleEspecialidade {
 
     private MySqlFactory conn;
-    private Connection conEspecialidade;
 
     public ControleEspecialidade() {
-        try {
-            this.conEspecialidade = DriverManager.getConnection("jdbc:mysql://localhost:3306/aula_poo", "root", "root");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        conn = new MySqlFactory();
     }
 
     public void inserir(int id, String especialidade) throws SQLException {
         String sql = "INSERT INTO especialidade"
-                + " (idespecialidade, nome)"
+                + " (idEspecialidade, "
+                + "nomeEspecialidade)"
                 + "VALUES (?, ?)";
+        Connection conEspecialidade = conn.getConnection();
         try {
-            PreparedStatement stmt = this.conEspecialidade.prepareStatement(sql);
+            PreparedStatement stmt = conEspecialidade.prepareStatement(sql);
             stmt.setInt(1, id);
             stmt.setString(2, especialidade);
             //executando
@@ -37,18 +34,19 @@ public class ControleEspecialidade {
     }
 
     public ArrayList listar() {
-        String sql = "SELECT * FROM especialidade";
+        String sql = "SELECT "
+                + "idEspecialidade, "
+                + "nomeEspecialidade "
+                + "FROM especialidade";
 
+        Connection conEspecialidade = conn.getConnection();
         ArrayList<Especialidade> especialidades = new ArrayList<>();
         Especialidade especialidade;
         try {
-            Statement stmt = this.conEspecialidade.createStatement();
+            Statement stmt = conEspecialidade.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
-
             while (rs.next()) {
-                int id = rs.getInt("idespecialidade");
-                String nome = rs.getString("nome");
-                especialidade = new Especialidade(id, nome);
+                especialidade = new Especialidade(rs.getInt(1), rs.getString(2));
                 especialidades.add(especialidade);
             }
             stmt.close();
@@ -62,16 +60,17 @@ public class ControleEspecialidade {
         String sql = "UPDATE especialidade\n"
                 + "SET nome = ?\n"
                 + "WHERE idespecialidade = ?;";
-        System.out.println(especialidade.getNome()+ especialidade.getIdEspecialidade());
-        
+        System.out.println(especialidade.getNome() + especialidade.getIdEspecialidade());
+
+        Connection conEspecialidade = conn.getConnection();
         try {
-            PreparedStatement stmt = this.conEspecialidade.prepareStatement(sql);
+            PreparedStatement stmt = conEspecialidade.prepareStatement(sql);
             stmt.setString(1, especialidade.getNome());
             stmt.setInt(2, especialidade.getIdEspecialidade());
             //executando
             stmt.execute();
             stmt.close();
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
