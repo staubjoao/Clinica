@@ -4,11 +4,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Staub/Desktop/Clinica/src/telas/TelaListagem.java</file>
-            <file>file:/C:/Users/Staub/Desktop/Clinica/src/telas/TelaMedico.java</file>
-            <file>file:/C:/Users/Staub/Desktop/Clinica/src/main/Main.java</file>
-            <file>file:/C:/Users/Staub/Desktop/Clinica/src/telas/TelaPrincipal.java</file>
+            <file>file:/C:/Users/Staub/Desktop/Clinica/src/telasGUI/TelaPaciente.java</file>
+            <file>file:/C:/Users/Staub/Desktop/Clinica/src/telasGUI/TelaEspecialidade.java</file>
             <file>file:/C:/Users/Staub/Desktop/Clinica/src/entidade/Medico.java</file>
-            <file>file:/C:/Users/Staub/Desktop/Clinica/src/controle/ControleMedico.java</file>
+            <file>file:/C:/Users/Staub/Desktop/Clinica/src/telasGUI/TelaMedico.java</file>
+            <file>file:/C:/Users/Staub/Desktop/Clinica/src/telas/TelaRelatorioEspecialidade.java</file>
         </group>
     </open-files>
 </project-private>

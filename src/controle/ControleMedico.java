@@ -5,7 +5,6 @@ import entidade.Medico;
 import factory.MySqlFactory;
 import java.sql.*;
 import java.util.ArrayList;
-import telas.TelaEspecialidade;
 import telas.TelaMedico;
 
 public class ControleMedico {

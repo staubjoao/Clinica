@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import entidade.Especialidade;
 import factory.MySqlFactory;
 import java.sql.*;
-import telas.TelaEspecialidade;
 
 public class ControleEspecialidade {
 
@@ -21,14 +20,14 @@ public class ControleEspecialidade {
         }
     }
 
-    public void inserir(TelaEspecialidade especialidades) throws SQLException {
+    public void inserir(int id, String especialidade) throws SQLException {
         String sql = "INSERT INTO especialidade"
                 + " (idespecialidade, nome)"
                 + "VALUES (?, ?)";
         try {
             PreparedStatement stmt = this.conEspecialidade.prepareStatement(sql);
-            stmt.setInt(1, especialidades.getIdEspecialidade());
-            stmt.setString(2, especialidades.getNome());
+            stmt.setInt(1, id);
+            stmt.setString(2, especialidade);
             //executando
             stmt.execute();
             stmt.close();

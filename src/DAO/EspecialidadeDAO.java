@@ -1,14 +1,14 @@
 package DAO;
 
+import entidade.Especialidade;
 import factory.MySqlFactory;
 import java.sql.*;
-import telas.TelaEspecialidade;
 
 public class EspecialidadeDAO {
 
     private MySqlFactory conn;
 
-    public void inserir(TelaEspecialidade especialidades) throws SQLException {
+    public void inserir(Especialidade especialidades) throws SQLException {
         String sql = "INSERT INTO especialidade"
                 + " (id_especialidade, nome)"
                 + "VALUES (?, ?)";
