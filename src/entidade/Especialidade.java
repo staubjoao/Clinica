@@ -9,6 +9,11 @@ public class Especialidade {
         this.setIdEspecialidade(idEspecialidade);
         this.setNome(nome);
     }
+    
+    @Override
+    public String toString(){
+        return this.nome;
+    }
 
     public int getIdEspecialidade() {
         return idEspecialidade;

@@ -1,5 +1,8 @@
 package DAO;
 
+import java.io.*;
+import java.util.ArrayList;
+
 import entidade.Especialidade;
 import factory.MySqlFactory;
 import java.sql.*;
@@ -8,21 +11,20 @@ public class EspecialidadeDAO {
 
     private MySqlFactory conn;
 
-    public void inserir(Especialidade especialidades) throws SQLException {
-        String sql = "INSERT INTO especialidade"
-                + " (id_especialidade, nome)"
-                + "VALUES (?, ?)";
-        Connection conEspecialidade;
-        try {
-            conEspecialidade = DriverManager.getConnection("jdbc:mysql://localhost:3306/aula_poo", "root", "root");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public EspecialidadeDAO() {
+        conn = new MySqlFactory();
+    }
 
+    public void inserir(Especialidade espc) throws SQLException {
+        String sql = "INSERT INTO especialidade"
+                + " (idEspecialidade, "
+                + "nomeEspecialidade)"
+                + "VALUES (?, ?)";
+        Connection conEspecialidade = conn.getConnection();
         try {
             PreparedStatement stmt = conEspecialidade.prepareStatement(sql);
-            stmt.setInt(1, especialidades.getIdEspecialidade());
-            stmt.setString(2, especialidades.getNome());
+            stmt.setInt(1, espc.getIdEspecialidade());
+            stmt.setString(2, espc.getNome());
             //executando
             stmt.execute();
             stmt.close();
@@ -31,34 +33,46 @@ public class EspecialidadeDAO {
         }
     }
 
-     public void listar(){
-        String sql = "SELECT * FROM especialidade";
-        Connection conEspecialidade;
-        try {
-            conEspecialidade = DriverManager.getConnection("jdbc:mysql://localhost:3306/aula_poo", "root", "root");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public ArrayList listar() {
+        String sql = "SELECT "
+                + "idEspecialidade, "
+                + "nomeEspecialidade "
+                + "FROM especialidade";
 
+        Connection conEspecialidade = conn.getConnection();
+        ArrayList<Especialidade> especialidades = new ArrayList<>();
+        Especialidade especialidade;
         try {
             Statement stmt = conEspecialidade.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
-            
-            while(rs.next())
-            {
-                int id = rs.getInt("id_especialidade");
-                String nome = rs.getString("nome");
-                System.out.format("%s %s\n", id, nome);
+            while (rs.next()) {
+                especialidade = new Especialidade(rs.getInt(1), rs.getString(2));
+                especialidades.add(especialidade);
             }
             stmt.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-     }
-             
-    
-    public void atualizar() {
+        return especialidades;
+    }
 
+    public void atualizar(Especialidade especialidade) {
+        String sql = "UPDATE especialidade\n"
+                + "SET nome = ?\n"
+                + "WHERE idespecialidade = ?;";
+        System.out.println(especialidade.getNome() + especialidade.getIdEspecialidade());
+
+        Connection conEspecialidade = conn.getConnection();
+        try {
+            PreparedStatement stmt = conEspecialidade.prepareStatement(sql);
+            stmt.setString(1, especialidade.getNome());
+            stmt.setInt(2, especialidade.getIdEspecialidade());
+            //executando
+            stmt.execute();
+            stmt.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void excluir() {
